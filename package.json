@@ -1,0 +1,14 @@
+{
+  "name": "url-cloud",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "react-scripts": "5.0.1"
+  },
+  "dependencies": {
+    "@types/react-router-dom": "^5.3.3",
+    "pako": "^2.1.0",
+    "react-router-dom": "^6.28.0",
+    "wordcloud2": "^1.0.0"
+  }
+}
