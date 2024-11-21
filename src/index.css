@@ -1,0 +1,22 @@
+:root {
+  --min-width: 800px;
+}
+
+html {
+  background: var(--background-color);
+}
+
+canvas {  
+  width: max(min(95vh,95vw),var(--min-width));
+  display: block;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.wordcloud-container {
+  position: relative;
+  width: max(min(95vh,95vw),var(--min-width));
+  display: block;
+  margin: auto;
+}
