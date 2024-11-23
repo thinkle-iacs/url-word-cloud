@@ -1,8 +1,7 @@
 // src/utils/urlBuilder.js
 
-const BASE = process.env.NETLIFY && process.env.URL
-    ? process.env.URL // Netlify deployment URL
-    : "http://localhost:3000"; // Fallback for local development
+const BASE =
+  process.env.REACT_APP_BASE_URL || "http://localhost:3000"; // Dynamically set BASE URL
 import pako from "pako";
 import sw from "stopwords";
 import {Filter} from "bad-words";

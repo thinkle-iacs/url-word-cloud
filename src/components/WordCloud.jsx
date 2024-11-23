@@ -107,10 +107,13 @@ const WordCloudComponent = ({
   // Dynamically set `--background-color` in :root
   useEffect(() => {
     document.documentElement.style.setProperty("--background-color", resolvedBackgroundColor);
+    document.documentElement.style.setProperty("--color", generateColors()[0]);
     return () => {
       document.documentElement.style.removeProperty("--background-color");
+      document.documentElement.style.removeProperty("--color");
+      
     };
-  }, [resolvedBackgroundColor]);
+  }, [resolvedBackgroundColor, foregroundColor, darkMode, resolvedHues]);
 
   const generateColors = () => {
     return resolvedHues.map((hue) => {

@@ -31,10 +31,10 @@ canvas {
 }
 
 .corner-link {
-  position: absolute;
+  position: fixed;
   right: 8px;
   top: 8px;
-  color: #fff;
-  background-color: #000;
+  color: var(--color, white);
+  text-shadow: 2px 2px var(--background-color, black);  
   z-index: 2;
 }
