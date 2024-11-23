@@ -1,5 +1,9 @@
+// src/utils/urlBuilder.js
+
 const BASE = "http://localhost:3000"; // Base URL for the tool
-import pako from 'pako';
+import pako from "pako";
+import sw from "stopwords";
+import {Filter} from "bad-words";
 
 /**
  * Generates word frequencies from an array of words.
@@ -20,13 +24,66 @@ export function getWordFrequencies(wordList) {
 }
 
 /**
- * Generates word frequencies from a block of source text.
+ * Generates word frequencies from a block of source text with options for stopword and profanity filtering.
  * @param {string} text - Source text.
+ * @param {object} [options={}] - Options for processing text.
+ * @param {string} [options.language='en'] - Language code for stopwords.
+ * @param {boolean} [options.removeStopwords=true] - Whether to remove stopwords.
+ * @param {boolean} [options.removeBadWords=true] - Whether to remove profane words.
  * @returns {Array<{ text: string, weight: number }>} - Array of words with their frequencies.
  */
-export function getWordFrequenciesFromSourceText(text) {
-  const wordList = text.split(/\W+/g).filter(Boolean); // Split by non-word characters, filter empty strings
+export function getWordFrequenciesFromSourceText(text, options = {}) {
+  const {
+    language = "en",
+    removeStopwords = true,
+    removeBadWords = true,
+  } = options;
+
+  // Tokenize the text into words
+  let wordList = text.toLowerCase().split(/\W+/g).filter(Boolean); // Split by non-word characters, filter empty strings
+
+  // Remove stopwords
+  if (removeStopwords) {
+    const stopwords = sw[language] || sw.english; // Default to English if the specified language is not available
+    wordList = wordList.filter((word) => !stopwords.includes(word));
+  }
+
+  // Remove profane words
+  if (removeBadWords) {
+    const filter = new Filter();
+    wordList = wordList.filter((word) => !filter.isProfane(word));
+  }
+
   return getWordFrequencies(wordList);
+}
+
+/**
+ * Normalizes word weights to ensure all words display.
+ * @param {Array<{ text: string, weight: number }>} words - Word frequencies.
+ * @param {number} [desiredMin=1] - Desired minimum weight.
+ * @param {number} [desiredMax=10] - Desired maximum weight.
+ * @returns {Array<{ text: string, weight: number }>}
+ */
+export function normalizeWeights(words, desiredMin = 1, desiredMax = 10) {
+  const weights = words.map((word) => word.weight);
+  const minWeight = Math.min(...weights);
+  const maxWeight = Math.max(...weights);
+
+  if (maxWeight === minWeight) {
+    // All weights are the same
+    return words.map((word) => ({
+      ...word,
+      weight: desiredMin,
+    }));
+  }
+
+  return words.map((word) => ({
+    ...word,
+    weight:
+      ((word.weight - minWeight) / (maxWeight - minWeight)) *
+        (desiredMax - desiredMin) +
+      desiredMin,
+  }));
 }
 
 /**
@@ -59,18 +116,20 @@ export function getUrl(words, params = {}) {
   if (backgroundColor)
     queryParams.push(`bg=${encodeURIComponent(backgroundColor)}`);
   if (hues) queryParams.push(`h=${encodeURIComponent(hues.join(","))}`);
-  if (singleHue) queryParams.push(`sh=${encodeURIComponent(singleHue)}`);
+  if (singleHue !== undefined)
+    queryParams.push(`sh=${encodeURIComponent(singleHue)}`);
   if (schemeOffsets)
     queryParams.push(`so=${encodeURIComponent(schemeOffsets.join(","))}`);
   if (minWidth) queryParams.push(`mw=${encodeURIComponent(minWidth)}`);
-  if (backgroundHue)
+  if (backgroundHue !== undefined)
     queryParams.push(`bh=${encodeURIComponent(backgroundHue)}`);
   if (darkMode) queryParams.push(`dm=1`);
-  if (monochromeHue)
+  if (monochromeHue !== undefined)
     queryParams.push(`mh=${encodeURIComponent(monochromeHue)}`);
   if (fontFamily) queryParams.push(`ff=${encodeURIComponent(fontFamily)}`);
   if (weightFactor) queryParams.push(`wf=${encodeURIComponent(weightFactor)}`);
-  if (rotateRatio) queryParams.push(`r=${encodeURIComponent(rotateRatio)}`);
+  if (rotateRatio !== undefined)
+    queryParams.push(`r=${encodeURIComponent(rotateRatio)}`);
 
   const wordParam = words
     .map(
@@ -95,14 +154,18 @@ export function getCondensedUrl(words, params = {}) {
 
   // Compress the query string using gzip
   const compressed = pako.deflate(queryString, { to: "string" });
-  
+
   // Convert the compressed data to Base64
   const base64Encoded = btoa(
-    compressed.split("").map((char) => String.fromCharCode(char)).join("")
+    compressed
+      .split("")
+      .map((char) => String.fromCharCode(char))
+      .join("")
   );
 
   return `${BASE}/r?c=${base64Encoded}`;
 }
+
 /**
  * Validates and simplifies conflicting parameters for the word cloud.
  * @param {object} params - Word cloud parameters.
@@ -133,7 +196,7 @@ export function validateParams(params = {}) {
   }
 
   // Conflict: backgroundHue and backgroundColor
-  if (backgroundHue && backgroundColor) {
+  if (backgroundHue !== undefined && backgroundColor) {
     warnings.push(
       "Conflicting parameters: `backgroundHue` overrides `backgroundColor`. Using `backgroundHue`."
     );
@@ -141,7 +204,7 @@ export function validateParams(params = {}) {
   }
 
   // Conflict: monochromeHue and hues/singleHue
-  if (monochromeHue && (hues || singleHue)) {
+  if (monochromeHue !== undefined && (hues || singleHue)) {
     warnings.push(
       "Conflicting parameters: `monochromeHue` overrides `hues` and `singleHue`. Using `monochromeHue`."
     );
@@ -153,4 +216,28 @@ export function validateParams(params = {}) {
   warnings.forEach((warning) => console.warn(warning));
 
   return validatedParams;
+}
+
+/**
+ * Constructs a URL from text input with optional settings.
+ * Applies stopword removal and profanity filtering by default.
+ * @param {string} text - Input text to generate word cloud.
+ * @param {object} settings - Additional word cloud parameters.
+ * @param {object} [options={}] - Options to control processing.
+ * @param {boolean} [options.removeStopwords=true] - Whether to remove stopwords.
+ * @param {boolean} [options.removeBadWords=true] - Whether to remove profane words.
+ * @param {string} [options.language='en'] - Language code for stopword removal.
+ * @returns {string} - Generated word cloud URL.
+ */
+export function buildUrlFromText(text, settings = {}, options = {}) {
+  // Process text to get word frequencies with filtering
+  const wordFrequencies = getWordFrequenciesFromSourceText(text, options);
+
+  // Normalize word weights to ensure visibility
+  const normalizedWords = normalizeWeights(wordFrequencies);
+
+  // Generate the URL
+  const url = getUrl(normalizedWords, settings);
+
+  return url;
 }
