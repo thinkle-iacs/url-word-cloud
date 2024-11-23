@@ -1,6 +1,8 @@
 // src/utils/urlBuilder.js
 
-const BASE = "http://localhost:3000"; // Base URL for the tool
+const BASE = process.env.NETLIFY && process.env.URL
+    ? process.env.URL // Netlify deployment URL
+    : "http://localhost:3000"; // Fallback for local development
 import pako from "pako";
 import sw from "stopwords";
 import {Filter} from "bad-words";
