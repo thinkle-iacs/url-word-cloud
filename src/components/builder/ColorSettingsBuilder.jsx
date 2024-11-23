@@ -148,7 +148,7 @@ const ColorSettingsBuilder = ({ settings, setSettings }) => {
           </label>
         ))}
       </div>
-      {colorMode === 'foregroundBackground' && (
+      {colorMode === 'foregroundBackground' ? (
         <>
           <div className="mb-4">
             <label className="block mb-1">Foreground Color:</label>
@@ -169,7 +169,17 @@ const ColorSettingsBuilder = ({ settings, setSettings }) => {
             />
           </div>
         </>
-      )}
+      ) : (    <div className="mb-4">
+            <label>
+              <input
+                type="checkbox"
+                name="darkMode"
+                checked={settings.darkMode ?? false}
+                onChange={handleCheckboxChange}
+              />{' '}
+              Dark Mode
+            </label>
+          </div>)}
       {(colorMode === 'monochrome' || colorMode === 'singleHue') && (
         <>
           <div className="mb-4">
@@ -227,17 +237,7 @@ const ColorSettingsBuilder = ({ settings, setSettings }) => {
               darkMode={settings.darkMode ?? false}
             />
           </div>
-          <div className="mb-4">
-            <label>
-              <input
-                type="checkbox"
-                name="darkMode"
-                checked={settings.darkMode ?? false}
-                onChange={handleCheckboxChange}
-              />{' '}
-              Dark Mode
-            </label>
-          </div>
+      
         </>
       )}
       {colorMode === 'hues' && (
