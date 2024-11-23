@@ -7,7 +7,7 @@ import WordCloud from "wordcloud";
  * @param {Object[]} words - Array of words to display in the word cloud, with text and weight properties.
  * @param {string} words[].text - The word to display.
  * @param {number} words[].weight - The weight of the word, influencing its size in the cloud.
- * @param {number[]} [hues=[88, 258, 278, 87, 89]] - Array of hue values (0-360) to generate text colors. Ignored if `monochromeHue` or `singleHue` is provided.
+ * @param {number[]} [hues=[]] - Array of hue values (0-360) to generate text colors. Ignored if `monochromeHue` or `singleHue` is provided.
  * @param {number|null} [singleHue=null] - A single hue (0-360) used to generate a text color scheme based on `schemeOffsets`.
  * @param {number[]} [schemeOffsets=[0, -20, 20, 180]] - Offsets (in degrees) applied to `singleHue` or `monochromeHue` to generate a color scheme.
  * @param {string} [minWidth="500px"] - Minimum width of the component's container.
@@ -57,14 +57,15 @@ import WordCloud from "wordcloud";
  */
 const WordCloudComponent = ({
   words,
-  hues = [88, 258, 278, 87, 89],
+  hues = [],
   singleHue = null,
   schemeOffsets = [0, -20, 20, 180],
   minWidth = "500px",
   backgroundColor = null,
+  foregroundColor = null,
   backgroundHue = null,
   darkMode = false,
-  monochromeHue = 43,
+  monochromeHue = null,
   fontFamily = "Futura, sans-serif",
   weightFactor = 8,
   rotateRatio = 0.4,
@@ -113,7 +114,10 @@ const WordCloudComponent = ({
   useEffect(() => {
     if (canvasRef.current) {
       const wordList = words.map(({ text, weight }) => [text, weight]);
-      const colors = generateColors();
+      let colors = generateColors();
+      if (foregroundColor) {
+        colors = [foregroundColor];
+      }
 
       WordCloud(canvasRef.current, {
         list: wordList,
@@ -125,7 +129,7 @@ const WordCloudComponent = ({
         rotateRatio,
       });
     }
-  }, [words, resolvedBackgroundColor, resolvedHues, darkMode, fontFamily, weightFactor, rotateRatio]);
+  }, [words, resolvedBackgroundColor, resolvedHues, darkMode, fontFamily, weightFactor, rotateRatio, foregroundColor]);
 
   return (
     <div className="wordcloud-container">

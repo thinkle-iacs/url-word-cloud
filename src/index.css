@@ -1,3 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* In your main CSS file (e.g., index.css) */
+body {
+  @apply bg-gray-100;
+}
+
 :root {
   --min-width: 800px;
 }
