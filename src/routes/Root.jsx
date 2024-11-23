@@ -59,39 +59,51 @@ const examples = [
     title: "Custom Hues",
     params: `h=88,100,120&w=${generateWordString(exampleWords)}`,
   },
+  {
+    title: 'Thanksgiving',
+    params: 'h=45%2C72%2C3%2C31%2C57%2C33&bh=34&ff=serif&wf=10&r=0.8&w=turkey,18;gravy,7;cranberry,6;cranberry,1;sauce,5;potatoes,8;mashed,7;stuffing,9;cornbread,5;green,1;beans,6;casserole,5;mac,1;%26,1;cheese,7;yams,8;sweet,1;potatoes,7;pumpkin,1;pie,12;apple,1;pie,8;pecan,1;pie,10;pie,20;rolls,6;bread,5;butter,4;salad,3;dessert,9;appetizers,4;wine,6;cider,5;eggnog,4;coffee,3;tea,2;spices,4;gravy,1;boat,3;family,12;friends,10;togetherness,8;reunion,7;gratitude,7;thankfulness,9;salad,5;macncheese,6;kitchen,4;oven,6;stuffing,12;dressing,8;fixings,7;,1'
+  }
 ];
 
 const Root = () => {
   return (
-    <div>
-      <h1>Welcome to WordCloud Tool</h1>
-      <p>
-        Create beautiful and customizable word clouds using simple URLs or our
-        builder tool. No subscription needed, no data stored on our servers.
-        Everything lives in the URL you build and access here.
-      </p>
-      <ul>
-        <li>
-          <Link to="/build">Go to Builder</Link>
-        </li>
-        <li>
-          <Link to="/cloud">Word Cloud Demo</Link>
-        </li>
-        <li>
-          <Link to="/api">API Documentation</Link>
-        </li>
-        <li>
-          Example Links:
-          <ul>
-            {examples.map(({ title, params }, index) => (
-              <li key={index}>
-                <Link to={`/r?${params}`}>{title}</Link>
-              </li>
-            ))}
-          </ul>
-        </li>
+    <div className="container mx-auto px-4 py-8">
+  <h1 className="text-3xl font-bold mb-4">Welcome to WordCloud Tool</h1>
+  <p className="text-lg mb-6">
+    Create beautiful and customizable word clouds using simple URLs or our
+    builder tool. No subscription needed, no data stored on our servers.
+    Everything lives in the URL you build and access here.
+  </p>
+  <ul className="space-y-4">
+    <li>
+      <Link to="/build" className="text-blue-500 hover:underline">
+        Go to Builder
+      </Link>
+    </li>
+    <li>
+      <Link to="/cloud" className="text-blue-500 hover:underline">
+        Word Cloud Demo
+      </Link>
+    </li>
+    <li>
+      <Link to="/api" className="text-blue-500 hover:underline">
+        API Documentation
+      </Link>
+    </li>
+    <li>
+      <span className="font-semibold">Example Links:</span>
+      <ul className="ml-4 mt-2 space-y-2 list-disc">
+        {examples.map(({ title, params }, index) => (
+          <li key={index}>
+            <Link to={`/r?${params}`} className="text-blue-500 hover:underline">
+              {title}
+            </Link>
+          </li>
+        ))}
       </ul>
-    </div>
+    </li>
+  </ul>
+</div>
   );
 };
 
