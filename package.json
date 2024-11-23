@@ -1,5 +1,5 @@
 {
-  "name": "url-cloud",
+  "name": "url-word-cloud",
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
@@ -13,9 +13,13 @@
   },
   "dependencies": {
     "@types/react-router-dom": "^5.3.3",
+    "autoprefixer": "^10.4.20",
+    "lorem-ipsum": "^2.0.8",
     "pako": "^2.1.0",
+    "postcss": "^8.4.49",
     "react": "^18.3.1",
     "react-router-dom": "^6.28.0",
+    "tailwindcss": "^3.4.15",
     "wordcloud": "^1.2.3"
   }
 }
