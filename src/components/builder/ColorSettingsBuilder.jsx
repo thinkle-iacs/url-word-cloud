@@ -54,6 +54,40 @@ const ColorSchemeSelector = ({ hue, selectedScheme, onChange, darkMode }) => {
 const ColorSettingsBuilder = ({ settings, setSettings }) => {
   const [colorMode, setColorMode] = useState('monochrome'); // Default to "Monochrome"
   const [colorScheme, setColorScheme] = useState('Monochromatic'); // Local state for colorScheme
+  // Shadow state -- used to store setting we toggled away from so that
+  // if we toggle between modes, we get our old settings back.
+  const [cachedSettings, setCachedSettings] = useState({...settings});
+  const colorProps = [
+    'foregroundColor',
+    'backgroundColor',
+    'monochromeHue',
+    'singleHue',
+    'backgroundHue',
+    'hues',
+    'schemeOffsets',
+    'darkMode',
+    'colorScheme'
+  ]
+  useEffect(() => {
+    const newCachedSettings = {...cachedSettings};
+    let changed = false;
+    for (let p of colorProps) {
+      if (settings[p] !== undefined) {
+        if (settings[p] !== newCachedSettings[p]) {
+          changed = true;        
+          newCachedSettings[p] = settings[p];
+        }
+      }
+    }
+    if (cachedSettings.colorScheme != colorScheme) {
+      changed = true;
+      newCachedSettings.colorScheme = colorScheme;
+    }
+    if (changed) {
+      console.log('Updating cached settings',newCachedSettings);
+      setCachedSettings(newCachedSettings);
+    }
+  }, [settings, colorScheme]);
 
   useEffect(() => {
     const rootElement = document.documentElement;
@@ -100,25 +134,25 @@ const ColorSettingsBuilder = ({ settings, setSettings }) => {
       // Set defaults based on the new color mode
       switch (newColorMode) {
         case 'foregroundBackground':
-          newSettings.foregroundColor = '#000000';
-          newSettings.backgroundColor = '#FFFFFF';
+          newSettings.foregroundColor = cachedSettings.hasOwnProperty('foregroundColor')
+  ? cachedSettings.foregroundColor
+  : '#FFFFFF';
+          newSettings.backgroundColor = cachedSettings.hasOwnProperty('backgroundColor') ? cachedSettings.backgroundColor : '#000000';
           break;
         case 'monochrome':
-          newSettings.monochromeHue = 0;
-          setColorScheme('Monochromatic'); // Set local colorScheme
-          newSettings.schemeOffsets = colorSchemes['Monochromatic'];
-          newSettings.darkMode = false;
+          newSettings.monochromeHue = cachedSettings.hasOwnProperty('monochromeHue') ? cachedSettings.monochromeHue : 0;                    
+          newSettings.schemeOffsets = cachedSettings.hasOwnProperty('schemeOffsets') ? cachedSettings.schemeOffsets : colorSchemes['Monochromatic'];
+          newSettings.darkMode = cachedSettings.hasOwnProperty('darkMode') ? cachedSettings.darkMode : false;
           break;
         case 'hues':
-          newSettings.hues = [0]; // Start with one hue slider
-          newSettings.backgroundHue = 0;
+          newSettings.hues = cachedSettings.hasOwnProperty('hues') ? cachedSettings.hues : [0]; // Start with one hue slider
+          newSettings.backgroundHue = cachedSettings.hasOwnProperty('backgroundHue') ? cachedSettings.backgroundHue : 0;
           break;
         case 'singleHue':
-          newSettings.singleHue = 0;
-          setColorScheme('Monochromatic'); // Set local colorScheme
-          newSettings.schemeOffsets = colorSchemes['Monochromatic'];
-          newSettings.backgroundHue = 0;
-          newSettings.darkMode = false;
+          newSettings.singleHue = cachedSettings.hasOwnProperty('singleHue') ? cachedSettings.singleHue : 0;          
+          newSettings.schemeOffsets = cachedSettings.hasOwnProperty('schemeOffsets') ? cachedSettings.schemeOffsets : colorSchemes['Monochromatic'];
+          newSettings.backgroundHue = cachedSettings.hasOwnProperty('backgroundHue') ? cachedSettings.backgroundHue : 0;
+          newSettings.darkMode = cachedSettings.hasOwnProperty('darkMode') ? cachedSettings.darkMode : false;
           break;
         default:
           break;
