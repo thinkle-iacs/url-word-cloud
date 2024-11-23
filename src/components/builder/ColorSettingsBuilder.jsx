@@ -280,8 +280,9 @@ const ColorSettingsBuilder = ({ settings, setSettings }) => {
             <label className="block mb-1">Hues:</label>
             {settings.hues && settings.hues.length > 0 ? (
               settings.hues.map((hue, index) => (
-                <div key={index} className="flex items-center mb-2">
+                <div key={index} className="flex flex-grow items-center mb-2">
                   <HueSlider
+                    name={`hues[${index}]`}
                     hue={hue ?? 0}
                     darkMode={settings.darkMode ?? false}
                     onChange={(e) => {
@@ -292,10 +293,11 @@ const ColorSettingsBuilder = ({ settings, setSettings }) => {
                         hues: newHues,
                       }));
                     }}
+                    className="flex-grow mr-2" // Allows the slider to grow and adds right margin
                   />
                   <button
                     type="button"
-                    className="ml-2 text-red-500"
+                    className="text-red-500 text-xl leading-none focus:outline-none"
                     onClick={() => {
                       const newHues = settings.hues.filter((_, i) => i !== index);
                       setSettings((prevSettings) => ({
@@ -303,10 +305,11 @@ const ColorSettingsBuilder = ({ settings, setSettings }) => {
                         hues: newHues,
                       }));
                     }}
+                    aria-label="Remove hue"
                   >
-                    Remove
+                    &times;
                   </button>
-                </div>
+                </div>                
               ))
             ) : (
               <p>No hues selected.</p>

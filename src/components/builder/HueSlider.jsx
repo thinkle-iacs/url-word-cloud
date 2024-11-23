@@ -18,7 +18,7 @@ const HueSlider = ({ hue, onChange, darkMode }) => {
   };
 
   return (
-    <div className="flex items-center mb-2">
+    <div className="flex flex-grow items-center mb-2">
       {/* Hue Slider */}
       <input
         type="range"
