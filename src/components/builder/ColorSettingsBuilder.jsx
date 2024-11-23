@@ -1,6 +1,8 @@
 // src/components/builder/ColorSettingsBuilder.jsx
+
 import React, { useEffect, useState } from 'react';
 import './hueSlider.css'; // Import CSS for the hue slider
+import HueSlider from './HueSlider'; // Import the HueSlider component
 
 const colorSchemes = {
   Monochromatic: [0],
@@ -50,7 +52,8 @@ const ColorSchemeSelector = ({ hue, selectedScheme, onChange, darkMode }) => {
 };
 
 const ColorSettingsBuilder = ({ settings, setSettings }) => {
-  const [colorMode, setColorMode] = useState('monochrome'); // Default to "Single Hue"
+  const [colorMode, setColorMode] = useState('monochrome'); // Default to "Monochrome"
+  const [colorScheme, setColorScheme] = useState('Monochromatic'); // Local state for colorScheme
 
   useEffect(() => {
     const rootElement = document.documentElement;
@@ -69,7 +72,8 @@ const ColorSettingsBuilder = ({ settings, setSettings }) => {
     const { name, value, type } = e.target;
     setSettings((prevSettings) => ({
       ...prevSettings,
-      [name]: type === 'number' || name.includes('Hue') ? parseInt(value, 10) : value,
+      [name]:
+        type === 'number' || name.includes('Hue') ? parseInt(value, 10) : value,
     }));
   };
 
@@ -89,9 +93,9 @@ const ColorSettingsBuilder = ({ settings, setSettings }) => {
       delete newSettings.monochromeHue;
       delete newSettings.singleHue;
       delete newSettings.hues;
-      delete newSettings.colorScheme;
       delete newSettings.schemeOffsets;
       delete newSettings.darkMode;
+      delete newSettings.backgroundHue; // Reset background hue
 
       // Set defaults based on the new color mode
       switch (newColorMode) {
@@ -101,17 +105,19 @@ const ColorSettingsBuilder = ({ settings, setSettings }) => {
           break;
         case 'monochrome':
           newSettings.monochromeHue = 0;
-          newSettings.colorScheme = 'Monochromatic';
+          setColorScheme('Monochromatic'); // Set local colorScheme
           newSettings.schemeOffsets = colorSchemes['Monochromatic'];
           newSettings.darkMode = false;
           break;
         case 'hues':
-          newSettings.hues = [];
+          newSettings.hues = [0]; // Start with one hue slider
+          newSettings.backgroundHue = 0;
           break;
         case 'singleHue':
           newSettings.singleHue = 0;
-          newSettings.colorScheme = 'Monochromatic';
+          setColorScheme('Monochromatic'); // Set local colorScheme
           newSettings.schemeOffsets = colorSchemes['Monochromatic'];
+          newSettings.backgroundHue = 0;
           newSettings.darkMode = false;
           break;
         default:
@@ -126,10 +132,10 @@ const ColorSettingsBuilder = ({ settings, setSettings }) => {
       <h3 className="text-lg font-bold mb-4">Color Settings</h3>
       <div className="mb-4">
         {[
-          { value: 'foregroundBackground', label: 'Foreground/Background' },
           { value: 'monochrome', label: 'Monochrome' },
+          { value: 'singleHue', label: 'Foreground/Background Hue' },
           { value: 'hues', label: 'Custom Hues' },
-          { value: 'singleHue', label: 'Single Hue' },
+          { value: 'foregroundBackground', label: 'Foreground/Background Color' },
         ].map(({ value, label }) => (
           <label key={value} className="mr-4">
             <input
@@ -149,7 +155,7 @@ const ColorSettingsBuilder = ({ settings, setSettings }) => {
             <input
               type="color"
               name="foregroundColor"
-              value={settings.foregroundColor || '#000000'}
+              value={settings.foregroundColor ?? '#000000'}
               onChange={handleInputChange}
             />
           </div>
@@ -158,7 +164,7 @@ const ColorSettingsBuilder = ({ settings, setSettings }) => {
             <input
               type="color"
               name="backgroundColor"
-              value={settings.backgroundColor || '#FFFFFF'}
+              value={settings.backgroundColor ?? '#FFFFFF'}
               onChange={handleInputChange}
             />
           </div>
@@ -168,45 +174,57 @@ const ColorSettingsBuilder = ({ settings, setSettings }) => {
         <>
           <div className="mb-4">
             <label className="block mb-1">
-              {colorMode === 'monochrome' ? 'Monochrome Hue:' : 'Single Hue:'}
+              {colorMode === 'monochrome' ? 'Monochrome Hue:' : 'Foreground Hue:'}
             </label>
-            <input
-              type="range"
-              name={colorMode === 'monochrome' ? 'monochromeHue' : 'singleHue'}
-              min="0"
-              max="360"
-              value={
+            <HueSlider
+              hue={
                 colorMode === 'monochrome'
-                  ? settings.monochromeHue || 0
-                  : settings.singleHue || 0
+                  ? settings.monochromeHue ?? 0
+                  : settings.singleHue ?? 0
               }
-              onChange={handleInputChange}
-              className="hue-slider"
+              darkMode={settings.darkMode ?? false}
+              onChange={(e) => {
+                const value = parseInt(e.target.value, 10);
+                setSettings((prevSettings) => ({
+                  ...prevSettings,
+                  [colorMode === 'monochrome' ? 'monochromeHue' : 'singleHue']: value,
+                }));
+              }}
             />
-            <span className="ml-2">
-              {colorMode === 'monochrome'
-                ? settings.monochromeHue
-                : settings.singleHue}
-              °
-            </span>
           </div>
+          {colorMode === 'singleHue' && (
+            <div className="mb-4">
+              <label className="block mb-1">Background Hue:</label>
+              <HueSlider
+                hue={settings.backgroundHue ?? 0}
+                darkMode={settings.darkMode ?? false}
+                onChange={(e) => {
+                  const value = parseInt(e.target.value, 10);
+                  setSettings((prevSettings) => ({
+                    ...prevSettings,
+                    backgroundHue: value,
+                  }));
+                }}
+              />
+            </div>
+          )}
           <div className="mb-4">
             <label className="block mb-1">Color Scheme:</label>
             <ColorSchemeSelector
               hue={
                 colorMode === 'monochrome'
-                  ? settings.monochromeHue || 0
-                  : settings.singleHue || 0
+                  ? settings.monochromeHue ?? 0
+                  : settings.singleHue ?? 0
               }
-              selectedScheme={settings.colorScheme || 'Monochromatic'}
+              selectedScheme={colorScheme} // Use local colorScheme state
               onChange={(selectedScheme) => {
+                setColorScheme(selectedScheme); // Update local colorScheme
                 setSettings((prevSettings) => ({
                   ...prevSettings,
-                  colorScheme: selectedScheme,
                   schemeOffsets: colorSchemes[selectedScheme],
                 }));
               }}
-              darkMode={settings.darkMode || false}
+              darkMode={settings.darkMode ?? false}
             />
           </div>
           <div className="mb-4">
@@ -214,7 +232,7 @@ const ColorSettingsBuilder = ({ settings, setSettings }) => {
               <input
                 type="checkbox"
                 name="darkMode"
-                checked={settings.darkMode || false}
+                checked={settings.darkMode ?? false}
                 onChange={handleCheckboxChange}
               />{' '}
               Dark Mode
@@ -229,11 +247,9 @@ const ColorSettingsBuilder = ({ settings, setSettings }) => {
             {settings.hues && settings.hues.length > 0 ? (
               settings.hues.map((hue, index) => (
                 <div key={index} className="flex items-center mb-2">
-                  <input
-                    type="range"
-                    min="0"
-                    max="360"
-                    value={hue}
+                  <HueSlider
+                    hue={hue ?? 0}
+                    darkMode={settings.darkMode ?? false}
                     onChange={(e) => {
                       const newHues = [...settings.hues];
                       newHues[index] = parseInt(e.target.value, 10);
@@ -242,9 +258,7 @@ const ColorSettingsBuilder = ({ settings, setSettings }) => {
                         hues: newHues,
                       }));
                     }}
-                    className="hue-slider flex-grow"
                   />
-                  <span className="ml-2 w-12 text-right">{hue}°</span>
                   <button
                     type="button"
                     className="ml-2 text-red-500"
@@ -277,22 +291,21 @@ const ColorSettingsBuilder = ({ settings, setSettings }) => {
               + Add Hue
             </button>
           </div>
-        </>
-      )}
-      {(colorMode === 'singleHue' || colorMode === 'hues') && (                
           <div className="mb-4">
             <label className="block mb-1">Background Hue:</label>
-            <input
-              type="range"
-              name="backgroundHue"
-              min="0"
-              max="360"
-              value={settings.backgroundHue || 0}
-              onChange={handleInputChange}
-              className="hue-slider"
+            <HueSlider
+              hue={settings.backgroundHue ?? 0}
+              darkMode={settings.darkMode ?? false}
+              onChange={(e) => {
+                const value = parseInt(e.target.value, 10);
+                setSettings((prevSettings) => ({
+                  ...prevSettings,
+                  backgroundHue: value,
+                }));
+              }}
             />
-            <span className="ml-2">{settings.backgroundHue || 0}°</span>
-          </div>        
+          </div>
+        </>
       )}
     </div>
   );
