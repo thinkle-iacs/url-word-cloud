@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { FiChevronUp, FiChevronDown } from 'react-icons/fi';
 import WordListBuilder from './WordListBuilder';
 
-const WordListSection = ({ words, setWords }) => {
+const WordListSection = ({ words, setWords, initialWords }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const toggleCollapse = () => setIsCollapsed(!isCollapsed);
@@ -19,7 +19,7 @@ const WordListSection = ({ words, setWords }) => {
       </div>
       {!isCollapsed && (
         <div className="overflow-auto">
-          <WordListBuilder words={words} setWords={setWords} />
+          <WordListBuilder words={words} setWords={setWords} initialWords={initialWords}/>
         </div>
       )}
     </div>

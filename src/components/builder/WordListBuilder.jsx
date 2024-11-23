@@ -3,18 +3,26 @@ import React, { useState, useEffect } from 'react';
 import { getWordFrequenciesFromSourceText } from '../../utils/urlBuilder';
 import { loremIpsum } from 'lorem-ipsum';
 
-const WordListBuilder = ({ words, setWords }) => {
-  const defaultText = loremIpsum({
+const WordListBuilder = ({ words, setWords, initialWords }) => {
+
+  let defaultText = loremIpsum({
     count: 8,
     format: 'plain',
     units: 'paragraphs',
     paragraphLowerBound: 5,
     paragraphUpperBound: 7,
   });
+  let initialManualInput = '';
+  let initialMode = 'text';
+  if (initialWords && initialWords.length > 0) {
+    defaultText = "";
+    initialManualInput = initialWords.map((word) => `${word.text} ${word.weight}`).join(' ');
+    initialMode = 'manual';
+  }
 
-  const [mode, setMode] = useState('text');
+  const [mode, setMode] = useState(initialMode);
   const [textInput, setTextInput] = useState(defaultText);
-  const [manualInput, setManualInput] = useState('');
+  const [manualInput, setManualInput] = useState(initialManualInput);
 
   useEffect(() => {
     if (mode === 'text' && (!words || words.length === 0)) {

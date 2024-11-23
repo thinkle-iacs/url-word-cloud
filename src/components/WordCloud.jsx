@@ -1,5 +1,7 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import WordCloud from "wordcloud";
+import { FiExternalLink } from "react-icons/fi";
+import { FiEdit } from "react-icons/fi";
 
 /**
  * WordCloudComponent - A React component to render a customizable word cloud with flexible color schemes and background options.
@@ -70,6 +72,12 @@ const WordCloudComponent = ({
   weightFactor = 8,
   rotateRatio = 0.4,
 }) => {
+  const [isInIframe, setIsInIframe] = useState(false);
+
+  useEffect(() => {
+    setIsInIframe(window.self !== window.top);
+  }, []);
+
   const canvasRef = useRef(null);
 
   // Determine the effective background color
@@ -133,6 +141,11 @@ const WordCloudComponent = ({
 
   return (
     <div className="wordcloud-container">
+      {isInIframe && (<a href="" target="_blank" rel="noopener noreferrer"
+      className="corner-link"
+      ><FiExternalLink/></a>) || (
+        <a className="corner-link" href={`/build/${location.search}`}><FiEdit/></a>
+      )}
       <canvas ref={canvasRef} width={1600} height={1600}></canvas>
     </div>
   );

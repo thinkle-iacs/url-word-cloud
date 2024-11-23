@@ -5,7 +5,8 @@ import { parseParams } from '../utils/parseParams';
 
 const Build = () => {
   const params = parseParams(window.location.search);
-  const initialState = { settings: params };
+  console.log('parsed params in Build: ', params);
+  const initialState = { settings: params, words: params.words };
 
   return (
     <div>
