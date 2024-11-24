@@ -3,11 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
-    "react-scripts": "5.0.1"
+    "@rollup/plugin-commonjs": "^28.0.1",
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "@rollup/plugin-terser": "^0.4.4",
+    "react-scripts": "5.0.1",
+    "rollup": "^2.79.2"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build:lib": "rollup -c",
+    "build": "npm run build:lib && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -15,6 +20,7 @@
     "@types/react-router-dom": "^5.3.3",
     "autoprefixer": "^10.4.20",
     "bad-words": "^4.0.0",
+    "base-x": "^5.0.0",
     "lorem-ipsum": "^2.0.8",
     "pako": "^2.1.0",
     "postcss": "^8.4.49",
