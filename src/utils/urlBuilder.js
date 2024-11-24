@@ -100,7 +100,7 @@ export function getUrl(words, params = {}) {
     foregroundColor,
     backgroundColor,
     hues,
-    singleHue,
+    foregroundHue,
     schemeOffsets,
     minWidth,
     backgroundHue,
@@ -118,8 +118,8 @@ export function getUrl(words, params = {}) {
   if (backgroundColor)
     queryParams.push(`bg=${encodeURIComponent(backgroundColor)}`);
   if (hues) queryParams.push(`h=${encodeURIComponent(hues.join(","))}`);
-  if (singleHue !== undefined)
-    queryParams.push(`sh=${encodeURIComponent(singleHue)}`);
+  if (foregroundHue !== undefined)
+    queryParams.push(`fh=${encodeURIComponent(foregroundHue)}`);
   if (schemeOffsets)
     queryParams.push(`so=${encodeURIComponent(schemeOffsets.join(","))}`);
   if (minWidth) queryParams.push(`mw=${encodeURIComponent(minWidth)}`);
@@ -180,7 +180,7 @@ export function validateParams(params = {}) {
     foregroundColor,
     backgroundColor,
     hues,
-    singleHue,
+    foregroundHue,
     schemeOffsets,
     backgroundHue,
     monochromeHue,
@@ -189,13 +189,13 @@ export function validateParams(params = {}) {
   const warnings = [];
   const validatedParams = { ...params };
 
-  // Conflict: foregroundColor and hues/singleHue/schemeOffsets
-  if (foregroundColor && (hues || singleHue || schemeOffsets)) {
+  // Conflict: foregroundColor and hues/foregroundHue/schemeOffsets
+  if (foregroundColor && (hues || foregroundHue || schemeOffsets)) {
     warnings.push(
-      "Conflicting parameters: `foregroundColor` overrides `hues`, `singleHue`, and `schemeOffsets`. Ignoring hues-related parameters."
+      "Conflicting parameters: `foregroundColor` overrides `hues`, `foregroundHue`, and `schemeOffsets`. Ignoring hues-related parameters."
     );
     delete validatedParams.hues;
-    delete validatedParams.singleHue;
+    delete validatedParams.foregroundHue;
     delete validatedParams.schemeOffsets;
   }
 
@@ -207,13 +207,13 @@ export function validateParams(params = {}) {
     delete validatedParams.backgroundColor;
   }
 
-  // Conflict: monochromeHue and hues/singleHue
-  if (monochromeHue !== undefined && (hues || singleHue)) {
+  // Conflict: monochromeHue and hues/foregroundHue
+  if (monochromeHue !== undefined && (hues || foregroundHue)) {
     warnings.push(
-      "Conflicting parameters: `monochromeHue` overrides `hues` and `singleHue`. Using `monochromeHue`."
+      "Conflicting parameters: `monochromeHue` overrides `hues` and `foregroundHue`. Using `monochromeHue`."
     );
     delete validatedParams.hues;
-    delete validatedParams.singleHue;
+    delete validatedParams.foregroundHue;
   }
 
   // Display warnings in console
@@ -246,10 +246,24 @@ export function buildUrlFromText(text, settings = {}, options = {}) {
   return url;
 }
 
-const UrlBuilder = {
+export function buildCondensedUrlFromText (text, settings = {}, options = {}) {
+  // Process text to get word frequencies with filtering
+  const wordFrequencies = getWordFrequenciesFromSourceText(text, options);
+
+  // Normalize word weights to ensure visibility
+  const normalizedWords = normalizeWeights(wordFrequencies);
+
+  // Generate the URL
+  const url = getCondensedUrl(normalizedWords, settings);
+
+  return url;
+}
+
+const UrlWordCloud = {
   getUrl,
   getCondensedUrl,
   validateParams,
   buildUrlFromText,
-}
-export default UrlBuilder;
+  buildCondensedUrlFromText,
+};
+export default UrlWordCloud;
