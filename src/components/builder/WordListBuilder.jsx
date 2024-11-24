@@ -3,6 +3,37 @@ import React, { useState, useEffect } from 'react';
 import { getWordFrequenciesFromSourceText } from '../../utils/urlBuilder';
 import { loremIpsum } from 'lorem-ipsum';
 
+function parseWeightedWords(value) {
+  const wordsArray = [];
+
+  // Helper function to process a word and its weight
+  const processEntry = (entry) => {
+    const trimmedEntry = entry.trim();
+    const weightMatch = trimmedEntry.match(/\s(\d+)$/); // Match trailing number preceded by a space
+    const weight = weightMatch ? parseFloat(weightMatch[1]) : 1; // Default weight is 1
+    const word = weightMatch ? trimmedEntry.replace(/\s\d+$/, '').trim() : trimmedEntry; // Remove weight from word
+    if (word) {
+      wordsArray.push({ text: word, weight });
+    }
+  };
+
+  if (/\s\d+/.test(value)) {
+    // Rule (1): If there are numbers preceded by whitespace, treat those as weights
+    const wordEntries = value.match(/(?:[^\s\d]+(?:\s[^\s\d]+)*)(?:\s\d+)?/g); // Match words followed by optional weights
+    wordEntries.forEach((entry) => processEntry(entry));
+  } else if (/[,;]/.test(value)) {
+    // Rule (2): If there are commas or semicolons, separate on those
+    const wordEntries = value.split(/[,;]/);
+    wordEntries.forEach((entry) => processEntry(entry));
+  } else {
+    // Rule (3): If no numbers, commas, or semicolons, split on whitespace
+    const wordEntries = value.split(/\s+/);
+    wordEntries.forEach((entry) => processEntry(entry));
+  }
+
+  return wordsArray;
+}
+
 const WordListBuilder = ({ words, setWords, initialWords }) => {
 
   let defaultText = loremIpsum({
@@ -42,18 +73,7 @@ const WordListBuilder = ({ words, setWords, initialWords }) => {
   const handleManualInputChange = (e) => {
     const value = e.target.value;
     setManualInput(value);
-    const wordEntries = value.split(/\s+/);
-    const wordsArray = [];
-    for (let i = 0; i < wordEntries.length; i++) {
-      const word = wordEntries[i];
-      const weight = parseFloat(wordEntries[i + 1]);
-      if (!isNaN(weight)) {
-        wordsArray.push({ text: word, weight });
-        i++;
-      } else {
-        wordsArray.push({ text: word, weight: 1 });
-      }
-    }
+    const wordsArray = parseWeightedWords(value);
     setWords(wordsArray);
   };
 
