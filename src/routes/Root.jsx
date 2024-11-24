@@ -49,11 +49,11 @@ const examples = [
   },
   {
     title: "Monochrome Scheme",
-    params: `sh=55&so=0,-5,5&w=${generateWordString(exampleWords)}`,
+    params: `fh=55&so=0,-5,5&w=${generateWordString(exampleWords)}`,
   },
   {
     title: "Dark Mode Monochrome",
-    params: `sh=55&so=0,-5,5&dm=1&w=${generateWordString(exampleWords)}`,
+    params: `fh=55&so=0,-5,5&dm=1&w=${generateWordString(exampleWords)}`,
   },
   {
     title: "Custom Hues",

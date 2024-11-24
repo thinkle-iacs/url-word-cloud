@@ -41,8 +41,8 @@ export const parseParams = (search) => {
     parsedParams.hues = params.get("h").split(",").map(Number);
   }
 
-  if (params.get("sh")) {
-    parsedParams.singleHue = parseInt(params.get("sh"), 10);
+  if (params.get("fh")) {
+    parsedParams.foregroundHue = parseInt(params.get("fh"), 10);
   }
 
   if (params.get("so")) {

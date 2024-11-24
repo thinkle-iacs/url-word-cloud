@@ -58,8 +58,8 @@ const ColorSettingsBuilder = ({ settings, setSettings, initialSettings }) => {
     initialColorMode = 'hues';
   } else if (initialSettings.foregroundColor && initialSettings.backgroundColor) {
     initialColorMode = 'foregroundBackground';
-  } else if (initialSettings.singleHue) {
-    initialColorMode = 'singleHue';
+  } else if (initialSettings.foregroundHue) {
+    initialColorMode = 'foregroundHue';
   } else {
     initialColorMode = 'monochrome';
   }
@@ -81,7 +81,7 @@ const ColorSettingsBuilder = ({ settings, setSettings, initialSettings }) => {
     'foregroundColor',
     'backgroundColor',
     'monochromeHue',
-    'singleHue',
+    'foregroundHue',
     'backgroundHue',
     'hues',
     'schemeOffsets',
@@ -145,7 +145,7 @@ const ColorSettingsBuilder = ({ settings, setSettings, initialSettings }) => {
       delete newSettings.foregroundColor;
       delete newSettings.backgroundColor;
       delete newSettings.monochromeHue;
-      delete newSettings.singleHue;
+      delete newSettings.foregroundHue;
       delete newSettings.hues;
       delete newSettings.schemeOffsets;
       delete newSettings.darkMode;
@@ -168,8 +168,8 @@ const ColorSettingsBuilder = ({ settings, setSettings, initialSettings }) => {
           newSettings.hues = cachedSettings.hasOwnProperty('hues') ? cachedSettings.hues : [0]; // Start with one hue slider
           newSettings.backgroundHue = cachedSettings.hasOwnProperty('backgroundHue') ? cachedSettings.backgroundHue : 0;
           break;
-        case 'singleHue':
-          newSettings.singleHue = cachedSettings.hasOwnProperty('singleHue') ? cachedSettings.singleHue : 0;          
+        case 'foregroundHue':
+          newSettings.foregroundHue = cachedSettings.hasOwnProperty('foregroundHue') ? cachedSettings.foregroundHue : 0;          
           newSettings.schemeOffsets = cachedSettings.hasOwnProperty('schemeOffsets') ? cachedSettings.schemeOffsets : colorSchemes['Monochromatic'];
           newSettings.backgroundHue = cachedSettings.hasOwnProperty('backgroundHue') ? cachedSettings.backgroundHue : 0;
           newSettings.darkMode = cachedSettings.hasOwnProperty('darkMode') ? cachedSettings.darkMode : false;
@@ -187,7 +187,7 @@ const ColorSettingsBuilder = ({ settings, setSettings, initialSettings }) => {
       <div className="mb-4">
         {[
           { value: 'monochrome', label: 'Monochrome' },
-          { value: 'singleHue', label: 'Foreground/Background Hue' },
+          { value: 'foregroundHue', label: 'Foreground/Background Hue' },
           { value: 'hues', label: 'Custom Hues' },
           { value: 'foregroundBackground', label: 'Foreground/Background Color' },
         ].map(({ value, label }) => (
@@ -234,7 +234,7 @@ const ColorSettingsBuilder = ({ settings, setSettings, initialSettings }) => {
               Dark Mode
             </label>
           </div>)}
-      {(colorMode === 'monochrome' || colorMode === 'singleHue') && (
+      {(colorMode === 'monochrome' || colorMode === 'foregroundHue') && (
         <>
           <div className="mb-4">
             <label className="block mb-1">
@@ -244,19 +244,19 @@ const ColorSettingsBuilder = ({ settings, setSettings, initialSettings }) => {
               hue={
                 colorMode === 'monochrome'
                   ? settings.monochromeHue ?? 0
-                  : settings.singleHue ?? 0
+                  : settings.foregroundHue ?? 0
               }
               darkMode={settings.darkMode ?? false}
               onChange={(e) => {
                 const value = parseInt(e.target.value, 10);
                 setSettings((prevSettings) => ({
                   ...prevSettings,
-                  [colorMode === 'monochrome' ? 'monochromeHue' : 'singleHue']: value,
+                  [colorMode === 'monochrome' ? 'monochromeHue' : 'foregroundHue']: value,
                 }));
               }}
             />
           </div>
-          {colorMode === 'singleHue' && (
+          {colorMode === 'foregroundHue' && (
             <div className="mb-4">
               <label className="block mb-1">Background Hue:</label>
               <HueSlider
@@ -278,7 +278,7 @@ const ColorSettingsBuilder = ({ settings, setSettings, initialSettings }) => {
               hue={
                 colorMode === 'monochrome'
                   ? settings.monochromeHue ?? 0
-                  : settings.singleHue ?? 0
+                  : settings.foregroundHue ?? 0
               }
               selectedScheme={colorScheme} // Use local colorScheme state
               onChange={(selectedScheme) => {
