@@ -1,8 +1,35 @@
+// Import the pako library for decompression
+import pako from 'pako';
+import { url2bytes } from './bytes2url';
+
 // Utility to parse URL parameters
 export const parseParams = (search) => {
   const params = new URLSearchParams(search);
   const parsedParams = {};
 
+  if (params.get("c")) {
+    // Condensed URL detected
+    let condensedRaw = params.get('c');
+    
+    // Convert URL-safe Base64 back to standard Base64
+    
+    let bytes = url2bytes(condensedRaw);
+        
+    try {
+      // Decode Base64 to get the compressed binary string                      
+      // Decompress the binary data to retrieve the original query string
+      const decompressedStr = pako.inflateRaw(bytes, { to: 'string' });
+      
+      // Recursively parse the decompressed query string
+      return parseParams(`?${decompressedStr}`);
+    } catch (error) {
+      console.error('Decoding or Decompression failed:', error);
+      // Optionally, you can decide to return an empty object or handle the error as needed
+      return {};
+    }
+  }
+
+  // Handle verbose URL parameters
   if (params.get("w")) {
     parsedParams.words = params.get("w").split(";").map((pair) => {
       const [word, weight] = pair.split(",");

@@ -2,10 +2,10 @@
 
 import React from 'react';
 import WordCloudComponent from '../WordCloud';
-import { getUrl } from '../../utils/urlBuilder';
+import { getCondensedUrl } from '../../utils/urlBuilder';
 
 const WordCloudPreview = ({ words, settings }) => {
-  const url = getUrl(words, settings);
+  const url = getCondensedUrl(words, settings);
   const { words: _, ...displaySettings } = { ...settings };  
   return (
     <div className="p-4 border rounded">

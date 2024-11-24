@@ -5,6 +5,7 @@ const BASE =
 import pako from "pako";
 import sw from "stopwords";
 import {Filter} from "bad-words";
+import { bytes2url } from "./bytes2url";
 
 /**
  * Generates word frequencies from an array of words.
@@ -152,19 +153,21 @@ export function getUrl(words, params = {}) {
 export function getCondensedUrl(words, params = {}) {
   const verboseUrl = getUrl(words, params);
   const queryString = verboseUrl.split("?")[1];
-
+  if (!queryString) {
+    console.warn("No query string found in the verbose URL.");
+    return verboseUrl; // Return the original URL if no query string exists
+  }  
   // Compress the query string using gzip
-  const compressed = pako.deflate(queryString, { to: "string" });
-
-  // Convert the compressed data to Base64
-  const base64Encoded = btoa(
-    compressed
-      .split("")
-      .map((char) => String.fromCharCode(char))
-      .join("")
-  );
-
-  return `${BASE}/r?c=${base64Encoded}`;
+  const compressed = pako.deflateRaw(queryString, { to: "binary" });  
+  // Convert the compressed data to Base64    
+  const urlSafeBytes = bytes2url(compressed);  
+  
+  if (urlSafeBytes.length > queryString.length) {
+    return verboseUrl; // Return the original URL if the compressed version is larger
+  } else {
+    console.log('Saved ', queryString.length - urlSafeBytes.length, ' characters by compressing the URL.')
+    return `${BASE}/r?c=${urlSafeBytes}`;
+  }
 }
 
 /**
@@ -242,3 +245,11 @@ export function buildUrlFromText(text, settings = {}, options = {}) {
 
   return url;
 }
+
+const UrlBuilder = {
+  getUrl,
+  getCondensedUrl,
+  validateParams,
+  buildUrlFromText,
+}
+export default UrlBuilder;
