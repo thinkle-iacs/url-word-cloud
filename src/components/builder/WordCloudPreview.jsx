@@ -2,9 +2,10 @@
 
 import React from 'react';
 import WordCloudComponent from '../WordCloud';
-import { getCondensedUrl } from '../../utils/urlBuilder';
+import { getCondensedUrl, getUrl } from '../../utils/urlBuilder';
 
 const WordCloudPreview = ({ words, settings }) => {
+  const verboseUrl = getUrl(words, settings);
   const url = getCondensedUrl(words, settings);
   const { words: _, ...displaySettings } = { ...settings };  
   return (
@@ -15,22 +16,19 @@ const WordCloudPreview = ({ words, settings }) => {
       <details>
         <summary className="text-sm text-gray-600 mb-2">Code</summary>
         <div className="mb-4">
-          <label className="block font-bold mb-1">Shareable URL:</label>
-          <input
-            type="text"
-            readOnly
-            className="w-full p-2 border rounded"
-            value={url}
-            onFocus={(e) => e.target.select()}
-          />
+          <label className="block font-bold mb-1">Verbose URL:</label>
+          <pre>{verboseUrl}</pre>            
+          <label className="block font-bold mb-1">Condensed URL:</label>
+          <pre>{url}</pre>
         </div>
         <div>
-          <label className="block font-bold mb-1">Parameters Object:</label>
-          <textarea
-            readOnly
-            className="w-full p-2 border rounded h-32"
-            value={JSON.stringify(displaySettings, null, 2)}
-          ></textarea>
+          <label className="block font-bold mb-1">Example Call:</label>
+          <pre>
+            UrlBuilder.getCondensedUrl(
+              {JSON.stringify(words.slice(0,3), null, 2)},
+              {JSON.stringify(displaySettings, null, 2)}
+            );
+          </pre>
         </div>
       </details>
       
