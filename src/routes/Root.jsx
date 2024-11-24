@@ -61,7 +61,7 @@ const examples = [
   },
   {
     title: 'Thanksgiving',
-    params: 'h=45%2C72%2C3%2C31%2C57%2C33&bh=34&ff=serif&wf=10&r=0.8&w=turkey,18;gravy,7;cranberry,6;cranberry,1;sauce,5;potatoes,8;mashed,7;stuffing,9;cornbread,5;green,1;beans,6;casserole,5;mac,1;%26,1;cheese,7;yams,8;sweet,1;potatoes,7;pumpkin,1;pie,12;apple,1;pie,8;pecan,1;pie,10;pie,20;rolls,6;bread,5;butter,4;salad,3;dessert,9;appetizers,4;wine,6;cider,5;eggnog,4;coffee,3;tea,2;spices,4;gravy,1;boat,3;family,12;friends,10;togetherness,8;reunion,7;gratitude,7;thankfulness,9;salad,5;macncheese,6;kitchen,4;oven,6;stuffing,12;dressing,8;fixings,7;,1'
+    params: 'h=45%2C72%2C3%2C19%2C57%2C33&bh=34&ff=serif&wf=10&r=0.8&w=turkey,38;gravy,7;cranberry,6;table,7;place%20setting,4;cranberry%20sauce,5;potatoes,8;mashed,7;stuffing,9;cornbread,5;green%20beans,6;casserole,5;mac,1;%26,1;cheese,7;yams,8;sweet,1;potatoes,7;pumpkin,1;pie,12;apple,1;pie,8;pecan,1;pie,10;pie,20;rolls,6;bread,5;butter,4;salad,3;dessert,9;appetizers,4;wine,6;cider,5;eggnog,4;coffee,3;tea,2;spices,4;gravy,1;boat,3;family,18;friends,10;togetherness,8;reunion,7;gratitude,7;thankfulness,9;salad,5;mac%20and%20cheese,6;kitchen,4;oven,6;stuffing,12;dressing,8;fixings,7;football,8;Cowboys,4;Lions,6;cheerleaders,7;nap,5;walk,7;turkey%20trot,6',    
   }
 ];
 
