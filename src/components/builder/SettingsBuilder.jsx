@@ -2,7 +2,7 @@
 import React from 'react';
 import ColorSettingsBuilder from './ColorSettingsBuilder';
 
-const SettingsBuilder = ({ settings, setSettings }) => {
+const SettingsBuilder = ({ settings, setSettings, initialSettings }) => {
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
     setSettings((prevSettings) => ({
@@ -50,7 +50,9 @@ const SettingsBuilder = ({ settings, setSettings }) => {
           max="1"
         />
       </div>
-      <ColorSettingsBuilder settings={settings} setSettings={setSettings} />
+      <ColorSettingsBuilder 
+        initialSettings={initialSettings}
+        settings={settings} setSettings={setSettings} />
     </div>
   );
 };

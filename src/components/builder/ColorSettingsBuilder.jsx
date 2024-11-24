@@ -51,9 +51,29 @@ const ColorSchemeSelector = ({ hue, selectedScheme, onChange, darkMode }) => {
   );
 };
 
-const ColorSettingsBuilder = ({ settings, setSettings }) => {
-  const [colorMode, setColorMode] = useState('monochrome'); // Default to "Monochrome"
-  const [colorScheme, setColorScheme] = useState('Monochromatic'); // Local state for colorScheme
+const ColorSettingsBuilder = ({ settings, setSettings, initialSettings }) => {
+
+  let initialColorMode = 'monochrome';
+  if (initialSettings.hues) {
+    initialColorMode = 'hues';
+  } else if (initialSettings.foregroundColor && initialSettings.backgroundColor) {
+    initialColorMode = 'foregroundBackground';
+  } else if (initialSettings.singleHue) {
+    initialColorMode = 'singleHue';
+  } else {
+    initialColorMode = 'monochrome';
+  }
+  let initialColorScheme = 'Monochromatic';
+  if (initialSettings.schemeOffsets) {
+    for (let scheme in colorSchemes) {
+      if (colorSchemes[scheme].toString() === initialSettings.schemeOffsets.toString()) {
+        initialColorScheme = scheme;
+      }
+    }
+  }        
+
+  const [colorMode, setColorMode] = useState(initialColorMode); // Default to "Monochrome"
+  const [colorScheme, setColorScheme] = useState(initialColorScheme); // Local state for colorScheme
   // Shadow state -- used to store setting we toggled away from so that
   // if we toggle between modes, we get our old settings back.
   const [cachedSettings, setCachedSettings] = useState({...settings});

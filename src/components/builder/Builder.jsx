@@ -17,7 +17,9 @@ const Builder = ({ initialState = {} }) => {
         <div className="flex flex-col lg:col-span-1 h-full">
           <WordListSection words={words} setWords={setWords} initialWords={initialState.words}/>
           <div className="flex-grow overflow-auto">
-            <SettingsBuilder settings={settings} setSettings={setSettings} />
+            <SettingsBuilder settings={settings} setSettings={setSettings} 
+              initialSettings={initialState.settings}
+            />
           </div>
         </div>
         {/* Right Column */}
