@@ -24,7 +24,7 @@ export default {
     {
       file: "public/urlBuilder.iife.js",
       format: "iife",
-      name: "UrlBuilder", // Global object name on `window`
+      name: "UrlWordCloud", // Global object name on `window`
       sourcemap: true
     }
   ],
