@@ -102,6 +102,13 @@ const Api = () => {
       description: 'Ratio of words that will rotate.',
       settingsExample: '0.4',
       queryExample: '0.4',
+    },
+    {
+      settingsName : 'minWidth',
+      queryName: 'mw',
+      description: 'Minimum width of the word cloud.',
+      settingsExample: '500px',
+      queryExample: '500px',
     }
     // add rotation and 
   ]
@@ -141,6 +148,26 @@ const Api = () => {
       settingsExample: '90',
       queryExample: '90',
     },
+    {
+      settingsName: 'darkMode',
+      queryName: 'dm',
+      description: 'Boolean value to determine if the background should be dark or light based on the foreground hue.',
+      settingsExample: 'true',
+      queryExample: 'true',},
+    {
+      settingsName: 'foregroundSaturation',
+      queryName: 'fs',
+      description: 'Saturation value for the foreground color (colors are generated within a 10% range for variation; defaults to 70%).',
+      settingsExample: '60',
+      queryExample: '60',
+    },
+    {
+      settingsName: 'backgroundSaturation',
+      queryName: 'bs',
+      description: 'Saturation value for the background color (defaults to 30%).',
+      settingsExample: '20',
+      queryExample: '20',
+    }
   ];
   const colorOptions = [
     {
