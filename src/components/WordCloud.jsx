@@ -150,7 +150,7 @@ const WordCloudComponent = ({
 
   return (
     <div className="wordcloud-container">      
-      <Link to="/" className="home-link"><FiHome/></Link>
+      {!isInIframe && <Link to="/" className="home-link"><FiHome/></Link>}
       {isInIframe && (<a href="" target="_blank" rel="noopener noreferrer"
       className="corner-link"
       ><FiExternalLink/></a>) || (
