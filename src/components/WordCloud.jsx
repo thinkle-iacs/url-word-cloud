@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import WordCloud from "wordcloud";
-import { FiExternalLink } from "react-icons/fi";
-import { FiEdit } from "react-icons/fi";
+import { FiExternalLink, FiHome, FiEdit } from "react-icons/fi";
+import { Link } from "react-router-dom";
 
 /**
  * WordCloudComponent - A React component to render a customizable word cloud with flexible color schemes and background options.
@@ -61,7 +61,7 @@ const WordCloudComponent = ({
   words,
   hues = [],
   foregroundHue = null,
-  schemeOffsets = [0, -20, 20, 180],
+  schemeOffsets = [0,-5,5],
   minWidth = "500px",
   backgroundColor = null,
   foregroundColor = null,
@@ -143,7 +143,8 @@ const WordCloudComponent = ({
   }, [words, resolvedBackgroundColor, resolvedHues, darkMode, fontFamily, weightFactor, rotateRatio, foregroundColor]);
 
   return (
-    <div className="wordcloud-container">
+    <div className="wordcloud-container">      
+      <Link to="/" className="home-link"><FiHome/></Link>
       {isInIframe && (<a href="" target="_blank" rel="noopener noreferrer"
       className="corner-link"
       ><FiExternalLink/></a>) || (
