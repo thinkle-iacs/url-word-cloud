@@ -9,12 +9,7 @@ const Build = () => {
   const initialState = { settings: params, words: params.words };
 
   return (
-    <div>
-      <h1>Word Cloud Builder</h1>
-      <p>
-        Customize your word cloud with ease. Enter your word list, tweak the settings,
-        and get a shareable URL or API code to embed it in your projects.
-      </p>
+    <div class="container mx-auto bg-background text-foreground">      
       <Builder initialState={initialState} />
     </div>
   );

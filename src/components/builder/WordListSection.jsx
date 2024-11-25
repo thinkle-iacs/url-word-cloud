@@ -11,7 +11,7 @@ const WordListSection = ({ words, setWords, initialWords }) => {
   return (
     <div className="mb-4">
       <div
-        className="flex items-center justify-between cursor-pointer bg-gray-200 p-2 rounded"
+        className="flex items-center justify-between cursor-pointer bg-secondary text-primary p-2 rounded"
         onClick={toggleCollapse}
       >
         <h2 className="text-xl font-bold">Word List</h2>

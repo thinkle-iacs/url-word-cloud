@@ -85,7 +85,7 @@ const WordListBuilder = ({ words, setWords, initialWords }) => {
             type="radio"
             value="text"
             checked={mode === 'text'}
-            onChange={() => setMode('text')}
+            onChange={() => setMode('text')}            
           />{' '}
           Paste Text
         </label>
@@ -101,14 +101,14 @@ const WordListBuilder = ({ words, setWords, initialWords }) => {
       </div>
       {mode === 'text' ? (
         <textarea
-          className="w-full flex-grow p-2 border rounded"
+          className="w-full flex-grow p-2 border rounded bg-shaded text-shaded-text"
           placeholder="Paste your text here..."
           value={textInput}
           onChange={handleTextInputChange}
         ></textarea>
       ) : (
         <textarea
-          className="w-full flex-grow p-2 border rounded"
+          className="w-full flex-grow p-2 border rounded bg-shaded text-shaded-text"
           placeholder="Enter words and weights, e.g., 'apple 3 banana 2 orange 5'"
           value={manualInput}
           onChange={handleManualInputChange}

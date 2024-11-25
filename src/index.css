@@ -3,16 +3,13 @@
 @tailwind utilities;
 
 /* In your main CSS file (e.g., index.css) */
-body {
-  @apply bg-gray-100;
-}
 
 :root {
   --min-width: 800px;
 }
 
 html {
-  background: var(--background-color);
+  background: var(--background-color, hsl(220, 15%, 18%));
 }
 
 canvas {  

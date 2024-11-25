@@ -19,7 +19,7 @@ const SettingsBuilder = ({ settings, setSettings, initialSettings }) => {
         <input
           type="text"
           name="fontFamily"
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded bg-shaded text-shaded-text"
           value={settings.fontFamily || ''}
           onChange={handleInputChange}
           placeholder="e.g., 'Futura, sans-serif'"
@@ -30,7 +30,7 @@ const SettingsBuilder = ({ settings, setSettings, initialSettings }) => {
         <input
           type="number"
           name="weightFactor"
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded bg-shaded text-shaded-text"
           value={settings.weightFactor || ''}
           onChange={handleInputChange}
           placeholder="e.g., 8"
@@ -41,7 +41,7 @@ const SettingsBuilder = ({ settings, setSettings, initialSettings }) => {
         <input
           type="number"
           name="rotateRatio"
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded bg-shaded text-shaded-text"
           value={settings.rotateRatio || ''}
           onChange={handleInputChange}
           placeholder="e.g., 0.4"

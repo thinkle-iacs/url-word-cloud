@@ -1,5 +1,3 @@
-// src/utils/urlBuilder.js
-
 const BASE =
   process.env.REACT_APP_BASE_URL || "http://localhost:3000"; // Dynamically set BASE URL
 import pako from "pako";

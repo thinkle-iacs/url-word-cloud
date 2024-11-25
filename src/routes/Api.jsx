@@ -20,8 +20,8 @@ const ApiProps = ({ options, title="API Options", blurb=undefined }) => {
             onClick={() => setViewMode('settings')}
             className={`px-4 py-2 rounded shadow ${
               viewMode === 'settings'
-                ? 'bg-blue-500 text-white hover:bg-blue-600'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ? 'bg-primary text-accent-text '
+                : 'bg-background text-foreground '
             } transition`}
           >
             UrlWordCloud Settings
@@ -30,8 +30,8 @@ const ApiProps = ({ options, title="API Options", blurb=undefined }) => {
             onClick={() => setViewMode('queryString')}
             className={`px-4 py-2 rounded shadow ${
               viewMode === 'queryString'
-                ? 'bg-blue-500 text-white hover:bg-blue-600'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                ? 'bg-primary text-accent-text '
+                : 'bg-background text-foreground '
             } transition`}
           >
             Query String Parameters
@@ -39,17 +39,17 @@ const ApiProps = ({ options, title="API Options", blurb=undefined }) => {
         </div>
       </div>
       {blurb && <p className="mb-4">{blurb}</p>}
-      <table className="table-auto border-collapse border border-gray-300 w-full text-left">
+      <table className="table-auto border-collapse border border-foreground w-full text-left">
         <thead>
-          <tr className="bg-gray-100">
-            <th className="border border-gray-300 px-4 py-2">Name</th>
-            <th className="border border-gray-300 px-4 py-2">Description</th>
-            <th className="border border-gray-300 px-4 py-2">Example</th>
+          <tr className="bg-secondary text-secondary-text">
+            <th className="border  px-4 py-2">Name</th>
+            <th className="border px-4 py-2">Description</th>
+            <th className="border px-4 py-2">Example</th>
           </tr>
         </thead>
         <tbody>
           {options.map((option, index) => (
-            <tr key={index} className={index % 2 === 0 ? '' : 'bg-gray-50'}>
+            <tr key={index} className={index % 2 === 0 ? '' : 'bg-shaded text-shaded-text'}>
               <td className="border border-gray-300 px-4 py-2">
                 <code>{viewMode === 'settings' ? option.settingsName : option.queryName}</code>
               </td>
@@ -157,7 +157,7 @@ const Api = () => {
   ]
 
   return (
-    <div className="p-4 max-w-4xl mx-auto">
+    <div className="p-4 max-w-4xl mx-auto text-foreground">
       <h1 className="text-3xl font-bold mb-6">API Documentation</h1>
       <p className="mb-4">
         This app generates word clouds based on the query string provided in the URL. You can build query strings
@@ -171,27 +171,27 @@ const Api = () => {
       <h2 className="text-2xl font-semibold mt-6 mb-4">Table of Contents</h2>
       <ul className="list-disc list-inside mb-6">
         <li>
-          <a href="#overview" className="text-blue-500 underline">
+          <a href="#overview" className="text-link hover:text-link-hover underline">
             Overview
           </a>
         </li>
         <li>
-          <a href="#using-scripts" className="text-blue-500 underline">
+          <a href="#using-scripts" className="text-link hover:text-link-hover underline">
             Using the UrlBuilder Library
           </a>
         </li>
         <li>
-          <a href="#word-lists" className="text-blue-500 underline">
+          <a href="#word-lists" className="text-link hover:text-link-hover underline">
             Word Lists
           </a>
         </li>
         <li>
-          <a href="#cloud-options" className="text-blue-500 underline">
+          <a href="#cloud-options" className="text-link hover:text-link-hover underline">
             Cloud Options
           </a>
         </li>
         <li>
-          <a href="#manual-urls" className="text-blue-500 underline">
+          <a href="#manual-urls" className="text-link hover:text-link-hover underline">
             Building URLs by Hand
           </a>
         </li>
@@ -215,7 +215,7 @@ const Api = () => {
       </p>
       <h3 className="text-lg font-semibold mt-4">Modern Environments</h3>
       <p className="mb-4">For environments that support ES6 modules:</p>
-      <pre className="bg-gray-100 p-4 rounded mb-4">
+      <pre className="p-4 rounded mb-4 bg-code text-code-text">
         {`<script type="module">
   import UrlWordCloud from "${BASE}/urlBuilder.js";
   const words = [
@@ -235,7 +235,7 @@ const Api = () => {
         If your environment doesn’t support ES6 modules, use the <code>urlBuilder.iife.js</code> version, which
         attaches a global <code>UrlWordCloud</code> object:
       </p>
-      <pre className="bg-gray-100 p-4 rounded mb-4">
+      <pre className="p-4 rounded mb-4 bg-code text-code-text">
         {`<script src="${BASE}/urlBuilder.iife.js"></script>
 <script>
   const words = [
@@ -262,7 +262,7 @@ const Api = () => {
       <p className="mb-4">
         Use an array of objects where each object contains a <code>text</code> and a <code>weight</code> property:
       </p>
-      <pre className="bg-gray-100 p-4 rounded mb-4">
+      <pre className="p-4 rounded mb-4 bg-code text-code-text">
         {`const words = [
   { text: "Hello", weight: 5 },
   { text: "World", weight: 3 },
@@ -273,7 +273,7 @@ const Api = () => {
         You can also generate a word list from text using the{" "}
         <code>getWordFrequenciesFromSourceText</code> method. By default, this method removes stopwords and profanity.
       </p>
-      <pre className="bg-gray-100 p-4 rounded mb-4">
+      <pre className="bg-code text-code-text p-4 rounded mb-4">
         {`const text = "Hello world! Hello hello world!";
 const options = {
   removeStopwords: true,
