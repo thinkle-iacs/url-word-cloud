@@ -74,6 +74,7 @@ const ColorSettingsBuilder = ({ settings, setSettings, initialSettings }) => {
 
   const [colorMode, setColorMode] = useState(initialColorMode); // Default to "Monochrome"
   const [colorScheme, setColorScheme] = useState(initialColorScheme); // Local state for colorScheme
+  const [saturationMode, setSaturationMode] = useState('saturationMode'); // Local state for saturation mode
   // Shadow state -- used to store setting we toggled away from so that
   // if we toggle between modes, we get our old settings back.
   const [cachedSettings, setCachedSettings] = useState({...settings});
@@ -83,11 +84,25 @@ const ColorSettingsBuilder = ({ settings, setSettings, initialSettings }) => {
     'monochromeHue',
     'foregroundHue',
     'backgroundHue',
+    'backgroundSaturation',
+    'foregroundSaturation',
     'hues',
     'schemeOffsets',
     'darkMode',
     'colorScheme'
   ]
+
+  useEffect(()=>{
+    setSettings((prevSettings) => {
+      const newSettings = {...prevSettings};
+      if (!saturationMode) {
+        delete newSettings.backgroundSaturation;
+        delete newSettings.foregroundSaturation;
+      }
+      return newSettings;
+    });
+  },[saturationMode])    
+
   useEffect(() => {
     const newCachedSettings = {...cachedSettings};
     let changed = false;
@@ -223,7 +238,8 @@ const ColorSettingsBuilder = ({ settings, setSettings, initialSettings }) => {
             />
           </div>
         </>
-      ) : (    <div className="mb-4">
+      ) : (    <>
+          <div className="mb-4">
             <label>
               <input
                 type="checkbox"
@@ -233,7 +249,58 @@ const ColorSettingsBuilder = ({ settings, setSettings, initialSettings }) => {
               />{' '}
               Dark Mode
             </label>
-          </div>)}
+          </div>
+          <div className="mb-4">
+            <label>
+              <input
+                type="checkbox"
+                name="saturationMode"
+                checked={saturationMode}
+                onChange={(e)=>setSaturationMode(e.target.checked)}
+              />{' '}
+              Customize Saturation
+            </label>
+          </div>
+          {saturationMode && (
+            <>
+                <div className="mb-4">
+                  <label className="block mb-1">
+                    Background Saturation
+                  </label>
+                  <input
+                    type="range"
+                    name="backgroundSaturation"
+                    min="0"
+                    max="100"
+                    value={settings.backgroundSaturation ?? 30}
+                    onChange={(e)=>{
+                      setSettings((prevSettings) => ({
+                        ...prevSettings,
+                        backgroundSaturation: parseInt(e.target.value, 10),
+                      }))
+                    }}/>
+                </div>
+                <div className="mb-4">
+                  <label className="block mb-1">
+                    Foreground Saturation
+                  </label>
+                  <input
+                    type="range"
+                    name="foregroundSaturation"
+                    min="0"
+                    max="100"
+                    value={settings.foregroundSaturation ?? 70}
+                    onChange={(e)=>{
+                      setSettings((prevSettings) => ({
+                        ...prevSettings,
+                        foregroundSaturation: parseInt(e.target.value, 10),
+                      }))
+                    }}/>
+                </div>
+                </>
+          )}
+          </>
+        )}
       {(colorMode === 'monochrome' || colorMode === 'foregroundHue') && (
         <>
           <div className="mb-4">

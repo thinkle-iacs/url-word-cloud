@@ -71,6 +71,8 @@ const WordCloudComponent = ({
   fontFamily = "Futura, sans-serif",
   weightFactor = 8,
   rotateRatio = 0.4,
+  backgroundSaturation = 30,
+  foregroundSaturation = 70
 }) => {
   const [isInIframe, setIsInIframe] = useState(false);
 
@@ -85,9 +87,9 @@ const WordCloudComponent = ({
     if (backgroundColor) {
       return backgroundColor;
     }
-    const hue = monochromeHue ?? backgroundHue ?? 88; // Default hue if none provided
+    const hue = monochromeHue ?? backgroundHue ?? 220; // Default hue if none provided
     const lightness = darkMode ? 15 : 85; // Dark or light background
-    return `hsl(${hue}, 30%, ${lightness}%)`;
+    return `hsl(${hue}, ${backgroundSaturation}%, ${lightness}%)`;
   })();
 
   // Determine text hues
@@ -101,6 +103,9 @@ const WordCloudComponent = ({
       return schemeOffsets.map((offset) => (foregroundHue + offset) % 360);
     }
     // Use provided hues
+    if (!hues.length) {
+      hues = [220]
+    }
     return hues;
   })();
 
@@ -116,9 +121,10 @@ const WordCloudComponent = ({
   }, [resolvedBackgroundColor, foregroundColor, darkMode, resolvedHues]);
 
   const generateColors = () => {
-    return resolvedHues.map((hue) => {
+    return words.map((w,i) => {
+      const hue = resolvedHues[i % resolvedHues.length];
       const lightness = darkMode ? 70 + Math.random() * 20 : 20 + Math.random() * 20;
-      return `hsl(${hue}, ${60 + Math.random() * 20}%, ${lightness}%)`;
+      return `hsl(${hue}, ${Math.round(foregroundSaturation - 10 + Math.random()*20)}%, ${lightness}%)`;
     });
   };
 
@@ -135,7 +141,7 @@ const WordCloudComponent = ({
         gridSize: Math.round(16 * window.devicePixelRatio),
         weightFactor,
         fontFamily,
-        color: () => colors[Math.floor(Math.random() * colors.length)],
+        color: (word, weight, fontSize, distance, theta) => colors[Math.floor(Math.random() * colors.length)],
         backgroundColor: resolvedBackgroundColor,
         rotateRatio,
       });

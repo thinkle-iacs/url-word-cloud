@@ -85,5 +85,13 @@ export const parseParams = (search) => {
     parsedParams.foregroundColor = params.get("fg");
   }
 
+  if (params.get("fs")) {
+    parsedParams.foregroundSaturation = parseFloat(params.get("fs"));
+  }
+
+  if (params.get("bs")) {
+    parsedParams.backgroundSaturation = parseFloat(params.get("bs"));
+  }
+
   return parsedParams;
 };

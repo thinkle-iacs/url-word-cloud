@@ -97,6 +97,8 @@ export function getUrl(words, params = {}) {
   const {
     foregroundColor,
     backgroundColor,
+    foregroundSaturation,
+    backgroundSaturation,
     hues,
     foregroundHue,
     schemeOffsets,
@@ -130,6 +132,12 @@ export function getUrl(words, params = {}) {
   if (weightFactor) queryParams.push(`wf=${encodeURIComponent(weightFactor)}`);
   if (rotateRatio !== undefined)
     queryParams.push(`r=${encodeURIComponent(rotateRatio)}`);
+  if (foregroundSaturation !== undefined) {
+    queryParams.push(`fs=${encodeURIComponent(foregroundSaturation)}`);
+  }
+  if (backgroundSaturation !== undefined) {
+    queryParams.push(`bs=${encodeURIComponent(backgroundSaturation)}`);
+  }
 
   const wordParam = words
     .map(
