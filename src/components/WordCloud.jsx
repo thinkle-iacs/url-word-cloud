@@ -113,12 +113,13 @@ const WordCloudComponent = ({
   useEffect(() => {
     document.documentElement.style.setProperty("--background-color", resolvedBackgroundColor);
     document.documentElement.style.setProperty("--color", generateColors()[0]);
+    document.documentElement.style.setProperty("--min-width", minWidth);
     return () => {
       document.documentElement.style.removeProperty("--background-color");
       document.documentElement.style.removeProperty("--color");
-      
+      document.documentElement.style.removeProperty("--min-width");      
     };
-  }, [resolvedBackgroundColor, foregroundColor, darkMode, resolvedHues]);
+  }, [resolvedBackgroundColor, foregroundColor, darkMode, minWidth, resolvedHues]);
 
   const generateColors = () => {
     return words.map((w,i) => {
