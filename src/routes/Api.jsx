@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { FiHome } from 'react-icons/fi';
 
 const BASE =
   process.env.REACT_APP_BASE_URL || "http://localhost:3000"; // Dynamically set BASE URL
@@ -13,6 +15,7 @@ const ApiProps = ({ options, title="API Options", blurb=undefined }) => {
 
   return (
     <div className="mt-8">
+      <Link to="/" className="home-link"><FiHome/></Link>
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold">{title}</h2>
         <div className="flex space-x-2">
