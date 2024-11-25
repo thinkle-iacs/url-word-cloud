@@ -198,8 +198,8 @@ const ColorSettingsBuilder = ({ settings, setSettings, initialSettings }) => {
   };
 
   return (
-    <div>
-      <h3 className="text-lg font-bold mb-4">Color Settings</h3>
+    <details open>
+      <summary className="text-lg text-accent font-bold mb-4">Color Settings</summary>
       <div className="mb-4">
         {[
           { value: 'monochrome', label: 'Monochrome' },
@@ -432,7 +432,7 @@ const ColorSettingsBuilder = ({ settings, setSettings, initialSettings }) => {
           </div>
         </>
       )}
-    </div>
+    </details>
   );
 };
 

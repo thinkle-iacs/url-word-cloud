@@ -14,22 +14,27 @@ const WordCloudPreview = ({ words, settings }) => {
         Open in new tab
       </a>
       <details>
-        <summary className="text-sm text-foreground mb-2">Code</summary>
-        <div className="mb-4">
-          <label className="block font-bold mb-1">Verbose URL:</label>
-          <pre>{verboseUrl}</pre>            
-          <label className="block font-bold mb-1">Condensed URL:</label>
-          <pre>{url}</pre>
-        </div>
-        <div>
-          <label className="block font-bold mb-1">Example Call:</label>
+        <summary className="text-xl font-bold  text-foreground mb-2">Code</summary>
+        
+          <details><summary className="text-sm font-bold mb-1">URL Params:</summary>
+            <pre>{verboseUrl.slice(0,verboseUrl.indexOf('w='))}w=...</pre>
+          </details>
+          <details><summary className="text-sm font-bold mb-1">Full Verbose URL:</summary>
+            <pre>{verboseUrl}</pre>              
+          </details>
+          <details><summary className="text-sm font-bold mb-1">Condensed URL:</summary>
+            <pre>{url}</pre>  
+          </details>                    
+        
+        <details>
+          <summary className="text-md font-bold mb-1">Example Call:</summary>
           <pre>
             UrlBuilder.getCondensedUrl(
               {JSON.stringify(words.slice(0,3), null, 2)},
               {JSON.stringify(displaySettings, null, 2)}
             );
           </pre>
-        </div>
+        </details>
       </details>
       
       <h2 className="text-xl font-bold mb-2">Preview</h2>
