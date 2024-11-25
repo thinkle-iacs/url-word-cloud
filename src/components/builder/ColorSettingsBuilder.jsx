@@ -71,10 +71,11 @@ const ColorSettingsBuilder = ({ settings, setSettings, initialSettings }) => {
       }
     }
   }        
+  let initialSaturationMode = initialSettings.backgroundSaturation || initialSettings.foregroundSaturation ? true : false;
 
   const [colorMode, setColorMode] = useState(initialColorMode); // Default to "Monochrome"
   const [colorScheme, setColorScheme] = useState(initialColorScheme); // Local state for colorScheme
-  const [saturationMode, setSaturationMode] = useState('saturationMode'); // Local state for saturation mode
+  const [saturationMode, setSaturationMode] = useState(initialSaturationMode); // Local state for saturation mode
   // Shadow state -- used to store setting we toggled away from so that
   // if we toggle between modes, we get our old settings back.
   const [cachedSettings, setCachedSettings] = useState({...settings});
