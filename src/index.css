@@ -4,6 +4,15 @@
 
 /* In your main CSS file (e.g., index.css) */
 
+.home-link {
+  position: fixed;
+  left: 8px;
+  top: 8px;
+  color: var(--color, white);
+  text-shadow: 2px 2px var(--background-color, hsl(220, 15%, 18%));  
+  z-index: 2;
+}
+
 :root {
   --min-width: 800px;
 }
