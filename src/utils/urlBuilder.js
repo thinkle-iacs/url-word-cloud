@@ -11,13 +11,13 @@ import { bytes2url } from "./bytes2url";
  * @returns {Array<{ text: string, weight: number }>} - Array of words with their frequencies.
  */
 export function getWordFrequencies(wordList) {
-  const frequencies = {};
+  const frequencies = new Map();
   wordList.forEach((word) => {
     word = word.toLowerCase();
-    frequencies[word] = (frequencies[word] || 0) + 1;
+    frequencies.set(word, (frequencies.get(word) || 0) + 1);
   });
 
-  return Object.entries(frequencies).map(([text, weight]) => ({
+  return Array.from(frequencies, ([text, weight]) => ({
     text,
     weight,
   }));
@@ -39,8 +39,19 @@ export function getWordFrequenciesFromSourceText(text, options = {}) {
     removeBadWords = true,
   } = options;
 
-  // Tokenize the text into words
-  let wordList = text.toLowerCase().split(/\W+/g).filter(Boolean); // Split by non-word characters, filter empty strings
+  // Double quotes (including smart quotes) keep a phrase together. Unquoted
+  // text retains the existing word-by-word behavior.
+  let wordList = [];
+  const tokens = /"([^"\r\n]+)"|“([^”\r\n]+)”|([^"“”]+)/g;
+  for (const match of text.toLowerCase().matchAll(tokens)) {
+    const phrase = match[1] ?? match[2];
+    if (phrase !== undefined) {
+      const trimmed = phrase.trim().replace(/\s+/g, ' ');
+      if (trimmed) wordList.push(trimmed);
+    } else {
+      wordList.push(...match[3].split(/\W+/g).filter(Boolean));
+    }
+  }
 
   // Remove stopwords
   if (removeStopwords) {
@@ -55,6 +66,16 @@ export function getWordFrequenciesFromSourceText(text, options = {}) {
   }
 
   return getWordFrequencies(wordList);
+}
+
+// A list of responses can contain punctuation, numbers, and stopwords that
+// belong to the title. Keep each complete line and count repeated titles.
+export function getTitleFrequencies(text) {
+  const titles = text.split(/\r?\n/).map((line) => {
+    const title = line.trim().replace(/\s+/g, ' ');
+    return title.replace(/^(?:"(.*)"|“(.*)”)$/, (_, straight, smart) => straight ?? smart).trim();
+  }).filter(Boolean);
+  return getWordFrequencies(titles);
 }
 
 /**
