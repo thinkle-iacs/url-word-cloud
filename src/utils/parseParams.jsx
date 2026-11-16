@@ -31,9 +31,14 @@ export const parseParams = (search) => {
 
   // Handle verbose URL parameters
   if (params.get("w")) {
-    parsedParams.words = params.get("w").split(";").map((pair) => {
+    // Separate entries before decoding so punctuation inside a title does not
+    // become a separator. getUrl encodes each title and weight separately.
+    const rawWords = search.replace(/^\?/, '').split('&')
+      .find((part) => part.startsWith('w=')).slice(2);
+    const decode = (value = '') => decodeURIComponent(value.replace(/\+/g, ' '));
+    parsedParams.words = rawWords.split(";").map((pair) => {
       const [word, weight] = pair.split(",");
-      return { text: word, weight: parseFloat(weight) };
+      return { text: decode(word), weight: parseFloat(decode(weight)) };
     });
   }
 

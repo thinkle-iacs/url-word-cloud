@@ -1,6 +1,6 @@
 // src/components/builder/WordListBuilder.jsx
 import React, { useState, useEffect } from 'react';
-import { getWordFrequenciesFromSourceText } from '../../utils/urlBuilder';
+import { getWordFrequenciesFromSourceText, getTitleFrequencies } from '../../utils/urlBuilder';
 import { loremIpsum } from 'lorem-ipsum';
 
 function parseWeightedWords(value) {
@@ -34,48 +34,40 @@ function parseWeightedWords(value) {
   return wordsArray;
 }
 
-const WordListBuilder = ({ words, setWords, initialWords }) => {
+const WordListBuilder = ({ setWords, initialWords }) => {
 
-  let defaultText = loremIpsum({
+  const [defaultText] = useState(() => loremIpsum({
     count: 8,
     format: 'plain',
     units: 'paragraphs',
     paragraphLowerBound: 5,
     paragraphUpperBound: 7,
-  });
+  }));
   let initialManualInput = '';
   let initialMode = 'text';
   if (initialWords && initialWords.length > 0) {
-    defaultText = "";
-    initialManualInput = initialWords.map((word) => `${word.text} ${word.weight}`).join(' ');
+    initialManualInput = initialWords.map((word) => `${word.text} ${word.weight}`).join('\n');
     initialMode = 'manual';
   }
 
   const [mode, setMode] = useState(initialMode);
-  const [textInput, setTextInput] = useState(defaultText);
+  const [textInput, setTextInput] = useState(initialMode === 'manual' ? '' : defaultText);
+  const [titleInput, setTitleInput] = useState('');
   const [manualInput, setManualInput] = useState(initialManualInput);
 
   useEffect(() => {
-    if (mode === 'text' && (!words || words.length === 0)) {
-      // Initialize with default lorem ipsum text
-      const frequencies = getWordFrequenciesFromSourceText(defaultText);
-      setWords(frequencies);
+    if (mode === 'manual') {
+      // A shared cloud already has parsed entries. Preserve titles containing
+      // numbers or punctuation rather than parsing their display text again.
+      setWords(initialWords?.length && manualInput === initialManualInput
+        ? initialWords
+        : parseWeightedWords(manualInput));
+    } else if (mode === 'titles') {
+      setWords(getTitleFrequencies(titleInput));
+    } else {
+      setWords(getWordFrequenciesFromSourceText(textInput));
     }
-  }, [mode, words, setWords, defaultText]);
-
-  const handleTextInputChange = (e) => {
-    const value = e.target.value;
-    setTextInput(value);
-    const frequencies = getWordFrequenciesFromSourceText(value);
-    setWords(frequencies);
-  };
-
-  const handleManualInputChange = (e) => {
-    const value = e.target.value;
-    setManualInput(value);
-    const wordsArray = parseWeightedWords(value);
-    setWords(wordsArray);
-  };
+  }, [mode, textInput, titleInput, manualInput, setWords, initialWords, initialManualInput]);
 
   return (
     <div className="p-4 border rounded h-full flex flex-col">
@@ -89,6 +81,15 @@ const WordListBuilder = ({ words, setWords, initialWords }) => {
           />{' '}
           Paste Text
         </label>
+        <label className="mr-4">
+          <input
+            type="radio"
+            value="titles"
+            checked={mode === 'titles'}
+            onChange={() => setMode('titles')}
+          />{' '}
+          One title per line
+        </label>
         <label>
           <input
             type="radio"
@@ -99,19 +100,39 @@ const WordListBuilder = ({ words, setWords, initialWords }) => {
           Enter Words and Weights
         </label>
       </div>
-      {mode === 'text' ? (
+      <p id="word-input-help" className="text-sm mb-2">
+        {mode === 'titles'
+          ? 'Paste one book title or phrase per line. Repeated titles count toward its size. Numbers and punctuation stay part of the title.'
+          : mode === 'text'
+            ? 'Paste text to count individual words. Use double quotes to keep a phrase together, e.g. "The Hunger Games" (straight or curly quotes).'
+            : 'Enter words or phrases followed by a weight, e.g. The Hunger Games 3 Charlotte’s Web 2.'}
+      </p>
+      {mode === 'titles' ? (
+        <textarea
+          aria-label="Book titles or phrases"
+          aria-describedby="word-input-help"
+          className="w-full flex-grow p-2 border rounded bg-shaded text-shaded-text"
+          placeholder={'The Hunger Games\nCharlotte’s Web\nThe Hunger Games'}
+          value={titleInput}
+          onChange={(e) => setTitleInput(e.target.value)}
+        ></textarea>
+      ) : mode === 'text' ? (
         <textarea
           className="w-full flex-grow p-2 border rounded bg-shaded text-shaded-text"
+          aria-label="Source text"
+          aria-describedby="word-input-help"
           placeholder="Paste your text here..."
           value={textInput}
-          onChange={handleTextInputChange}
+          onChange={(e) => setTextInput(e.target.value)}
         ></textarea>
       ) : (
         <textarea
           className="w-full flex-grow p-2 border rounded bg-shaded text-shaded-text"
+          aria-label="Words and weights"
+          aria-describedby="word-input-help"
           placeholder="Enter words and weights, e.g., 'apple 3 banana 2 orange 5'"
           value={manualInput}
-          onChange={handleManualInputChange}
+          onChange={(e) => setManualInput(e.target.value)}
         ></textarea>
       )}
     </div>
